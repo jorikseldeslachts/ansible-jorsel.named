@@ -1,0 +1,15 @@
+---
+tasks:
+  - name: Install dns packages
+    apt:
+      name: {{ item }}
+    with_items:
+      - bind9
+      - bind9utils
+      - dnsutils
+    
+  - name: Create bind9 directory
+    file:
+      path: /etc/bind9
+      state: directory
+      mode: 0755

@@ -1,0 +1,6 @@
+---
+dns_zones:
+  - name: jorsel.be
+    reverse_zone_name: 
+  - name: milkywaygalaxy.be
+    reverse_zone_name:

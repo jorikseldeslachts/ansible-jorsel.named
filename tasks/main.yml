@@ -1,0 +1,9 @@
+---
+tasks:
+  - name: Include CentOS 7 tasks
+    include: centos7.yaml
+    when: ansible_os_family == "CentOS"
+
+  - name: Include Debian tasks
+    include: debian.yaml
+    when: ansible_os_family == "Debian"
