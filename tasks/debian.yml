@@ -1,7 +1,7 @@
 
 - name: Install dns packages
   apt:
-    name: {{ item }}
+    name: "{{ item }}"
   with_items:
     - bind9
     - bind9utils
@@ -12,3 +12,42 @@
     path: /etc/bind9
     state: directory
     mode: 0755
+
+- name: Register rndc-key
+  shell: |
+    rndc-confgen | grep -i secret | grep -v "#" | cut -d "\"" -f 2
+  register: rndc_key
+
+- name: Debug rndc-key
+  debug:
+    var: rndc_key.stdout
+
+- name: "Configure {{ named_rndc_key_file }}"
+  template:
+    src: rndc.key.j2
+    dest: "{{ named_config_path }}/{{ named_rndc_key_file }}"
+    mode: 0640
+
+- name: Configure named.conf
+  template:
+    src: named.conf.j2
+    dest: "{{ named_config_path }}/named.conf"
+    mode: 0644
+  notify: restart named
+
+- name: Configure recursive zone files
+  template:
+    src: "db.{{ item }}.j2"
+    dest: "{{ named_config_path }}/db.{{ item }}"
+  with_items:
+    - "{{ named_dns_zones }}"
+  notify: restart named
+
+- name: Configure reversed zone files
+  template:
+    src: "db.{{ item }}.j2"
+    dest: "{{ named_config_path }}/db.{{ item }}"
+  with_items:
+    - "{{ named_dns_reversed_zones }}"
+  notify: restart named
+

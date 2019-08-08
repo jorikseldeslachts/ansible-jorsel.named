@@ -1,0 +1,5 @@
+- name: restart named
+  systemd:
+    name: "{{ named_service_name }}"
+    enabled: yes
+    state: restarted
