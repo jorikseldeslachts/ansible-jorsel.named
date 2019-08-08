@@ -1,0 +1,27 @@
+
+$TTL {{ named_ttl }} 
+@	IN	SOA	 ns.milkywaygalaxy.be. jorik.milkywaygalaxy.be. (
+	{# Results in:		2019070803		; serial #}
+					{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}		; serial
+					1D				; refresh
+					1H				; retry
+					1W				; expire
+					3H 				; minimum
+)
+
+; name servers - NS recors
+				IN	NS	ns.{{ item }}.
+
+; PTR records
+11	IN	PTR	ns.milkywaygalaxy.be.
+11	IN	PTR	dns2.milkywaygalaxy.be.
+1	IN	PTR	deathstar.milkywaygalaxy.be.
+2	IN	PTR	printer-1.milkywaygalaxy.be.
+3	IN	PTR	printer-2.milkywaygalaxy.be.
+4	IN	PTR	k8s-1-boven.milkywaygalaxy.be.
+5	IN	PTR	k8s-2-beneden.milkywaygalaxy.be.
+6	IN	PTR	k8s-3.milkywaygalaxy.be.
+8	IN	PTR	pandora.milkywaygalaxy.be.
+9	IN	PTR	pandora-2.milkywaygalaxy.be.
+12	IN	PTR	omega.milkywaygalaxy.be.
+13	IN	PTR	atlantis.milkywaygalaxy.be.
