@@ -1,0 +1,28 @@
+view "VLAN_{{ item.tag }}" {
+  match-clients { {{ item.network|replace("tag", item.tag) }}/{{ item.subnetmask }}; };
+
+  recursion {{ item.recursion }};
+
+  # Zone
+  zone "{{ item.domain }}" {
+    type master;
+    file "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.domain }}";
+  };
+
+  # Reverse zone
+  zone "{{ item.reversed|replace("tag", item.tag) }}.in-addr.arpa" {
+    type master;
+    file "{{ named_config_path }}/reversed_zones/db.vlan_{{ item.tag }}.{{ item.reversed|replace("tag", item.tag) }}";
+  };
+
+
+};
+
+logging {
+  channel bind.query.log {
+    file "{{ named_default_log_path }}/query_log_vlan_{{ item.tag }}.log";
+    print-time yes;
+    severity debug {{ item.log_level }};
+  };
+  category queries { bind.query.log; };
+};

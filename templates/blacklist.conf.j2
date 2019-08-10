@@ -1,0 +1,6 @@
+# Blacklist
+acl "blacklist" {
+{% for item in named_blacklist %}
+  {{ item }};
+{% endfor %}
+}; 

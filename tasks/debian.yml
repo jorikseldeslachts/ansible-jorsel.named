@@ -1,53 +1,118 @@
 
-- name: Install dns packages
-  apt:
-    name: "{{ item }}"
-  with_items:
-    - bind9
-    - bind9utils
-    - dnsutils
-  
-- name: Create bind9 directory
-  file:
-    path: /etc/bind9
-    state: directory
-    mode: 0755
+# - name: Install dns packages
+#   apt:
+#     name: "{{ item }}"
+#   with_items:
+#     - bind9
+#     - bind9utils
+#     - dnsutils
 
-- name: Register rndc-key
-  shell: |
-    rndc-confgen | grep -i secret | grep -v "#" | cut -d "\"" -f 2
-  register: rndc_key
 
-- name: Debug rndc-key
-  debug:
-    var: rndc_key.stdout
+# # Create folder structure
+# - name: Create bind9 directory
+#   file:
+#     path: "{{ named_config_path }}"
+#     state: directory
+#     mode: 0755
 
-- name: "Configure {{ named_rndc_key_file }}"
-  template:
-    src: rndc.key.j2
-    dest: "{{ named_config_path }}/{{ named_rndc_key_file }}"
-    mode: 0640
+# - name: "Create all needed sub directories of {{ named_config_path }}"
+#   file:
+#     path: "{{ named_config_path }}/{{ item }}"
+#     state: directory
+#   with_items:
+#     - rndc_keys
+#     - views
+#     - zones
+#     - reversed_zones
 
+# - name: Create logging directory
+#   file:
+#     path: "{{ named_default_log_path }}"
+#     state: directory
+
+
+# # debug
+# - name: Debug named_vlans
+#   debug:
+#     msg: "VLAN TAG: {{ item.tag }}"
+#   with_items: 
+#     - "{{ named_vlans }}"
+
+
+# # Rndc keys setup
+# - name: Register rndc-key
+#   shell: |
+#     rndc-confgen | grep -i secret | grep -v "#" | cut -d "\"" -f 2
+#   register: rndc_keys
+#   with_items: 
+#     - "{{ named_vlans }}"
+
+# - name: Debug rndc_keys
+#   debug:
+#     msg: "rndc_key: {{ item.stdout_lines }}"
+#   with_items: 
+#     - "{{ rndc_keys.results }}"
+
+# - name: Put generated keys in the files
+#   shell: |
+#     echo {{ item.0.stdout }} > {{ named_config_path }}/rndc_keys/rndc_vlan_{{ item.1.tag }}.key
+#   with_together:
+#     - "{{ rndc_keys.results }}"
+#     - "{{ named_vlans }}"
+
+
+# # Configure Views
+# - name: Configure views
+#   template:
+#     src: view.conf.j2
+#     dest: "{{ named_config_path }}/views/view_vlan_{{ item.tag }}.conf"
+#   with_items:
+#     - "{{ named_vlans }}"
+
+
+# Configure named.conf
 - name: Configure named.conf
   template:
     src: named.conf.j2
     dest: "{{ named_config_path }}/named.conf"
     mode: 0644
   notify: restart named
-
-- name: Configure recursive zone files
-  template:
-    src: "db.{{ item }}.j2"
-    dest: "{{ named_config_path }}/db.{{ item }}"
   with_items:
-    - "{{ named_dns_zones }}"
-  notify: restart named
+    - "{{ named_vlans }}"
 
-- name: Configure reversed zone files
+
+# # Configure blacklist
+# - name: Configure blacklist
+#   template:
+#     src: blacklist.conf.j2
+#     dest: "{{ named_config_path }}/blacklist.conf"
+#   when: named_blacklist is defined
+
+
+# Configure zonefiles
+- name: Configure zones files for each vlan
   template:
-    src: "db.{{ item }}.j2"
-    dest: "{{ named_config_path }}/db.{{ item }}"
+    src: "zones/db.vlan_{{ item.tag }}.{{ item.domain }}.j2"
+    dest: "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.domain }}"
   with_items:
-    - "{{ named_dns_reversed_zones }}"
-  notify: restart named
+    - "{{ named_vlans }}"
+
+
+
+
+# - name: Configure recursive zone files
+#   template:
+#     src: "db.{{ item }}.j2"
+#     dest: "{{ named_config_path }}/db.{{ item }}"
+#   with_items:
+#     - "{{ named_dns_zones }}"
+#   notify: restart named
+
+# - name: Configure reversed zone files
+#   template:
+#     src: "db.{{ item }}.j2"
+#     dest: "{{ named_config_path }}/db.{{ item }}"
+#   with_items:
+#     - "{{ named_dns_reversed_zones }}"
+#   notify: restart named
 

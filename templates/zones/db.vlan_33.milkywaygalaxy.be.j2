@@ -1,0 +1,19 @@
+$TTL {{ item.ttl }} 
+@    IN    SOA    ns.{{ item.domain }}. jorik.{{ item.domain }}. (
+{# Results in:		2019070803		; serial #}
+            {{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}    ; serial
+            1D            ; refresh
+            1H            ; retry
+            1W            ; expire
+            3H            ; minimum
+)
+
+; name servers - NS recors
+	IN	NS	ns.{{ item.domain }}.
+
+; name servers - A & CNAME records
+ns					IN	A		10.33.0.11
+dns2			    IN	CNAME	ns
+
+; VLAN {{ item.tag }} SERVERS - {{ item.network }}/{{ item.subnetmask }} - A records
+deathstar			IN	A		10.33.0.1

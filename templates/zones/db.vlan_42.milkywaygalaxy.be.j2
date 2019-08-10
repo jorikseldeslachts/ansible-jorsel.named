@@ -1,0 +1,41 @@
+$TTL {{ item.ttl }} 
+@    IN    SOA    ns.{{ item.domain }}. jorik.{{ item.domain }}. (
+{# Results in:		2019070803		; serial #}
+            {{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}    ; serial
+            1D            ; refresh
+            1H            ; retry
+            1W            ; expire
+            3H            ; minimum
+)
+
+; name servers - NS recors
+	IN	NS	ns.{{ item.domain }}.
+
+; name servers - A & CNAME records
+ns					IN	A		10.42.0.11
+dns2				IN	CNAME	ns
+
+; VLAN {{ item.tag }} SERVERS - {{ item.network }}/{{ item.subnetmask }} - A records
+deathstar			IN	A		10.42.0.1
+printer-1			IN	A		10.42.0.2
+printer-2			IN	A		10.42.0.3
+k8s1				IN	A		10.42.0.4
+k8s2				IN	A		10.42.0.5
+k8s3				IN	A		10.42.0.6
+pandora 1			IN	A		10.42.0.8
+pandora 2			IN	A		10.42.0.9
+omega				IN	A		10.42.0.12
+atlantis			IN	A		10.42.0.13
+
+
+# ; VLAN 127 IOT - 10.127.0.0/28 - A records
+# homecontrol			IN	A		10.127.0.2
+# alexa				IN	A		10.127.0.3
+# hs110-4				IN	A		10.127.0.4
+# hs110-5				IN	A		10.127.0.5
+# hs110-6				IN	A		10.127.0.6
+# hs110-7				IN	A		10.127.0.7
+# hs110-8				IN	A		10.127.0.8
+# hs110-9				IN	A		10.127.0.9
+# chromecast-1		IN	A		10.127.0.11
+# chromecast-2		IN	A		10.127.0.12

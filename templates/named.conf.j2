@@ -1,110 +1,136 @@
-# ACL
-acl "whitelist" {
-	localhost;
-	{% for subnet in named_acl_trusted %}
-	{{ subnet }};
-	{% endfor %}
 
-};
-
-{% if named_blacklist is defined %}
-# Blacklist
-acl "blacklist" {
-	localhost;			
-	{% for item in named_blacklist %}
-	{{ item }};
-	{% endfor %}
-
-};
-{% endif %}
-
-# RNDC
-include "{{ named_rndc_key_file }}";
-
-controls {
-	inet {{ named_rndc_default_server }} 
-	port {{ named_rndc_default_port }} 
-	allow { 127.0.0.1; }
-	keys { rndc-key; };
-};
+{# # Include rndc-keys
+# {% for vlan in named_vlans %}
+# {{ subnet }};
+# {% endfor %} #}
 
 # Options
 options {
+  # Listening address/port
+  listen-on port 53 { 127.0.0.1; any; };
 
-		# Listening address/port
-		listen-on port 53 { 127.0.0.1; any; };
+  # Caching
+  directory           "/var/cache/bind";
+  dump-file           "/var/cache/bind/named_dump.db";
+  statistics-file     "/var/cache/bind/named_stats.txt";
+  memstatistics-file  "/var/cache/bind/named_mem_stats.txt";
 
-		# Caching
-		directory			"/var/cache/bind";
-		dump-file			"/var/cache/bind/named_dump.db";
-		statistics-file		"/var/cache/bind/named_stats.txt";
-		memstatistics-file	"/var/cache/bind/named_mem_stats.txt";
+  # Disable recursion because it is an authoritative server for some zones
+  recursion no;
+  allow-recursion { none; };
 
-		# Disable recursion because it is an authoritative server for some zones
-		recursion no;
-		allow-recursion { none; };
+  # Who can query the server
+  allow-query { none; };
+  {# allow-query { whitelist; }; #}
 
-		# Who can query the server
-		allow-query { whitelist; };
+  # Who has access to records in cache
+  allow-query-cache { none; };
+  {# allow-query-cache { whitelist; }; #}
 
-		# Who has access to records in cache
-		allow-query-cache { whitelist; };
+  # DNS security
+  dnssec-enable yes;
+  dnssec-validation yes; # auto;
 
-		# DNS security
-		dnssec-enable yes;
-		dnssec-validation yes; # auto;
+  # conform to RFC1035
+  auth-nxdomain no;
+  {# # Upstream DNS servers
 
-		# conform to RFC1035
-		auth-nxdomain no;
+  # forwarders {
+  # 	{% for server in named_upstream_dns_servers %}
+  # 	{{ server }};
+  # 	{% endfor %}
+  # };
 
-		# Upstream DNS servers
-		# forwarders {
-		# 	{% for server in named_upstream_dns_servers %}
-		# 	{{ server }};
-		# 	{% endfor %}
-		# };
+  # Rndc options
+  default-key "rndc-key";
+  default-server {{ named_rndc_default_server }};
+  default-port {{ named_rndc_default_port }}; #}
 
-		# Rndc options
-		default-key "rndc-key";
-		default-server {{ named_rndc_default_server }};
-		default-port {{ named_rndc_default_port }};
-
-		# Blacklist
-		{% if named_blacklist is defined %}
-		blackhole { blacklist };
-		{% endif %}
+{% if named_blacklist is defined %}
+  # Blacklist
+  blackhole { blacklist };
+{% endif %}
 
 };
 
 
+# Views
+{% for vlan in named_vlans %}
+include "{{ named_config_path }}/views/view_vlan_{{ vlan.tag }}.conf";
+{% endfor %}
+
+
+{% if named_blacklist is defined %}
+# Blacklist
+include "{{ named_config_path }}/blacklist.conf";
+{% endif %}
+
+# Default log
 logging {
-	channel bind.query.log {
-		file "{{ named_log_path }}";
-		print-time yes;
-		severity debug {{ named_log_debug_level }};
-	};
-	category queries { bind.query.log; };
+  channel bind.query.log {
+    file "{{ named_default_log_path }}/query_log_default.log";
+    print-time yes;
+    severity debug {{ named_default_log_level }};
+  };
+  category queries { bind.query.log; };
 };
 
 
-{% for dns_zone in named_dns_zones %}
-# Zone {{ dns_zone }}
-zone "{{ dns_zone }}" {
-	type master;
-	file "/etc/bind/db.{{ dns_zone }}";
-};
 
 
-{% endfor %}
-{% for reverse_zone in named_dns_reversed_zones %}
-# Reverse zone {{ reverse_zone }}
-zone "{{ reverse_zone }}.in-addr.arpa" {
-	type master;
-	file "/etc/bind/db.{{ reverse_zone }}";
-};
+{# 
+
+# # ACL
+# acl "whitelist" {
+# 	localhost;
+# 	{% for subnet in named_acl_trusted %}
+# 	{{ subnet }};
+# 	{% endfor %}
+# };
 
 
-{% endfor %}
 
+# # RNDC
+# include "{{ named_rndc_key_file }}";
+
+# controls {
+# 	inet {{ named_rndc_default_server }} 
+# 	port {{ named_rndc_default_port }} 
+# 	allow { 127.0.0.1; }
+# 	keys { rndc-key; };
+# };
+
+
+
+
+# logging {
+# 	channel bind.query.log {
+# 		file "{{ named_log_path }}";
+# 		print-time yes;
+# 		severity debug {{ named_log_debug_level }};
+# 	};
+# 	category queries { bind.query.log; };
+# };
+
+
+# {% for dns_zone in named_dns_zones %}
+# # Zone {{ dns_zone }}
+# zone "{{ dns_zone }}" {
+# 	type master;
+# 	file "/etc/bind/db.{{ dns_zone }}";
+# };
+
+
+# {% endfor %}
+# {% for reverse_zone in named_dns_reversed_zones %}
+# # Reverse zone {{ reverse_zone }}
+# zone "{{ reverse_zone }}.in-addr.arpa" {
+# 	type master;
+# 	file "/etc/bind/db.{{ reverse_zone }}";
+# };
+
+
+# {% endfor %}
+ #}
 
 

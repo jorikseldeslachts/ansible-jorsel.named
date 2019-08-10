@@ -1,42 +1,107 @@
 ---
 
+# default values if not overridden
+named_default_network_template: 10.tag.0.0
+named_default_reversed_template: 0.tag.10
+named_default_domain: milkywaygalaxy.be
+named_default_ttl: 86400
+named_default_log_path: /var/log/bind
+named_default_log_level: 3
 
-# named/bind9 vars
-named_log_path: /var/log/dns.query.log
-named_log_debug_level: 3
-named_upstream_dns_servers:
-  - 1.1.1.1
-  - 9.9.9.9
-  - 8.8.8.8
-  - 8.8.4.4
-
-named_acl_trusted:
-  - 10.29.29.0/24
-  - 10.11.0.0/27
-  - 10.32.0.0/27
-  - 10.33.0.0/27
-  - 10.42.0.0/28
-
-named_dns_zones:
-  # - jorsel.be
-  - milkywaygalaxy.be
-
-named_dns_reversed_zones:
-  - 0.42.10
-  - 0.32.10
-  - 0.33.10
-
-named_blacklist: []
-
-named_ttl: 86400
-
-
+# service vars
 named_service_name: bind9
 named_config_path: /etc/bind
+named_blacklist: [
+  test.com,
+  forbidden.be
+]
 
-named_rndc_key_file: rndc.key
-named_rndc_default_server: 127.0.0.1 
-named_rndc_default_port: 953
+# VLAN setup for views
+named_vlans:
+  - name: WIFI
+    tag: 11
+    network: "{{ named_default_network_template }}"
+    subnetmask: 27
+    domain: "{{ named_default_domain }}"
+    reversed: "{{ named_default_reversed_template }}"
+    ttl: "{{ named_default_ttl }}"
+    log_level: "{{ named_default_log_level }}"
+    recursion: "no"
+  - name: MANAGEMENT
+    tag: 32
+    network: "{{ named_default_network_template }}"
+    subnetmask: 27
+    domain: "{{ named_default_domain }}"
+    reversed: "{{ named_default_reversed_template }}"
+    ttl: "{{ named_default_ttl }}"
+    log_level: "{{ named_default_log_level }}"
+    recursion: "no"
+  - name: LAN
+    tag: 33
+    network: "{{ named_default_network_template }}"
+    subnetmask: 27
+    domain: "{{ named_default_domain }}"
+    reversed: "{{ named_default_reversed_template }}"
+    ttl: "{{ named_default_ttl }}"
+    log_level: "{{ named_default_log_level }}"
+    recursion: "no"
+  - name: SERVERS
+    tag: 42
+    network: "{{ named_default_network_template }}"
+    subnetmask: 28
+    domain: "{{ named_default_domain }}"
+    reversed: "{{ named_default_reversed_template }}"
+    ttl: "{{ named_default_ttl }}"
+    log_level: "{{ named_default_log_level }}"
+    recursion: "no"
+  - name: VPN
+    tag: 29
+    network: 10.29.29.0
+    subnetmask: 24
+    domain: "{{ named_default_domain }}"
+    reversed: 29.29.10
+    ttl: "{{ named_default_ttl }}"
+    log_level: "{{ named_default_log_level }}"
+    recursion: "no"
+
+
+
+
+
+# # named/bind9 vars
+
+# named_upstream_dns_servers:
+#   - 1.1.1.1
+#   - 9.9.9.9
+#   - 8.8.8.8
+#   - 8.8.4.4
+
+# named_acl_trusted:
+#   - 10.29.29.0/24
+#   - 10.11.0.0/27
+#   - 10.32.0.0/27
+#   - 10.33.0.0/27
+#   - 10.42.0.0/28
+
+# named_dns_zones:
+#   # - jorsel.be
+#   - milkywaygalaxy.be
+
+# named_dns_reversed_zones:
+#   - 0.42.10
+#   - 0.32.10
+#   - 0.33.10
+
+
+
+
+
+
+
+
+# named_rndc_key_file: rndc.key
+# named_rndc_default_server: 127.0.0.1 
+# named_rndc_default_port: 953
 
 
 
