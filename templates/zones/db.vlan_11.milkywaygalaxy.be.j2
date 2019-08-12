@@ -1,4 +1,8 @@
+; VLAN {{ item.tag }} WIFI - {{ item.network }}/{{ item.subnetmask }}
+
 $TTL {{ item.ttl }} 
+$ORIGIN {{ item.domain }}.
+
 @    IN    SOA    ns.{{ item.domain }}. jorik.{{ item.domain }}. (
 {# Results in:		2019070803		; serial #}
             {{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}    ; serial
@@ -15,5 +19,6 @@ $TTL {{ item.ttl }}
 ns					IN	A		10.11.0.11
 dns2			    IN	CNAME	ns
 
-; VLAN {{ item.tag }} SERVERS - {{ item.network }}/{{ item.subnetmask }} - A records
-deathstar			IN	A		10.11.0.1
+; A records
+gateway 			IN	A		10.11.0.1
+ 

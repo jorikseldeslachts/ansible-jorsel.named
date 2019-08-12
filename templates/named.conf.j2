@@ -4,6 +4,14 @@
 # {{ subnet }};
 # {% endfor %} #}
 
+{# {% if named_blacklist is defined %}
+# include Blacklist
+include "{{ named_config_path }}/blacklist.conf";
+{% endif %} #}
+
+# include Logging
+include "{{ named_config_path }}/logging.conf";
+
 # Options
 options {
   # Listening address/port
@@ -31,6 +39,9 @@ options {
   dnssec-enable yes;
   dnssec-validation yes; # auto;
 
+  # Dont allow any transfers since we have no master/slaves
+  allow-transfer { none; };
+
   # conform to RFC1035
   auth-nxdomain no;
   {# # Upstream DNS servers
@@ -46,36 +57,18 @@ options {
   default-server {{ named_rndc_default_server }};
   default-port {{ named_rndc_default_port }}; #}
 
-{% if named_blacklist is defined %}
+{# {% if named_blacklist is defined %}
   # Blacklist
-  blackhole { blacklist };
-{% endif %}
+  blackhole { blacklist; };
+{% endif %} #}
 
 };
 
 
-# Views
+# include Views
 {% for vlan in named_vlans %}
 include "{{ named_config_path }}/views/view_vlan_{{ vlan.tag }}.conf";
 {% endfor %}
-
-
-{% if named_blacklist is defined %}
-# Blacklist
-include "{{ named_config_path }}/blacklist.conf";
-{% endif %}
-
-# Default log
-logging {
-  channel bind.query.log {
-    file "{{ named_default_log_path }}/query_log_default.log";
-    print-time yes;
-    severity debug {{ named_default_log_level }};
-  };
-  category queries { bind.query.log; };
-};
-
-
 
 
 {# 
@@ -89,7 +82,6 @@ logging {
 # };
 
 
-
 # # RNDC
 # include "{{ named_rndc_key_file }}";
 
@@ -99,38 +91,5 @@ logging {
 # 	allow { 127.0.0.1; }
 # 	keys { rndc-key; };
 # };
-
-
-
-
-# logging {
-# 	channel bind.query.log {
-# 		file "{{ named_log_path }}";
-# 		print-time yes;
-# 		severity debug {{ named_log_debug_level }};
-# 	};
-# 	category queries { bind.query.log; };
-# };
-
-
-# {% for dns_zone in named_dns_zones %}
-# # Zone {{ dns_zone }}
-# zone "{{ dns_zone }}" {
-# 	type master;
-# 	file "/etc/bind/db.{{ dns_zone }}";
-# };
-
-
-# {% endfor %}
-# {% for reverse_zone in named_dns_reversed_zones %}
-# # Reverse zone {{ reverse_zone }}
-# zone "{{ reverse_zone }}.in-addr.arpa" {
-# 	type master;
-# 	file "/etc/bind/db.{{ reverse_zone }}";
-# };
-
-
-# {% endfor %}
- #}
-
+#}
 

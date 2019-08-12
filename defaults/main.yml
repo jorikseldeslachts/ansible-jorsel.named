@@ -11,6 +11,7 @@ named_default_log_level: 3
 # service vars
 named_service_name: bind9
 named_config_path: /etc/bind
+named_user: bind
 named_blacklist: [
   test.com,
   forbidden.be
@@ -18,33 +19,33 @@ named_blacklist: [
 
 # VLAN setup for views
 named_vlans:
-  - name: WIFI
-    tag: 11
-    network: "{{ named_default_network_template }}"
-    subnetmask: 27
-    domain: "{{ named_default_domain }}"
-    reversed: "{{ named_default_reversed_template }}"
-    ttl: "{{ named_default_ttl }}"
-    log_level: "{{ named_default_log_level }}"
-    recursion: "no"
-  - name: MANAGEMENT
-    tag: 32
-    network: "{{ named_default_network_template }}"
-    subnetmask: 27
-    domain: "{{ named_default_domain }}"
-    reversed: "{{ named_default_reversed_template }}"
-    ttl: "{{ named_default_ttl }}"
-    log_level: "{{ named_default_log_level }}"
-    recursion: "no"
+  # - name: WIFI
+  #   tag: 11
+  #   network: "{{ named_default_network_template }}"
+  #   subnetmask: 27
+  #   domain: "{{ named_default_domain }}"
+  #   reversed: "{{ named_default_reversed_template }}"
+  #   ttl: 18000
+  #   log_level: "{{ named_default_log_level }}"
+  #   recursion: "yes"
+  # - name: MANAGEMENT
+  #   tag: 32
+  #   network: "{{ named_default_network_template }}"
+  #   subnetmask: 27
+  #   domain: "{{ named_default_domain }}"
+  #   reversed: "{{ named_default_reversed_template }}"
+  #   ttl: "{{ named_default_ttl }}"
+  #   log_level: "{{ named_default_log_level }}"
+  #   recursion: "no"
   - name: LAN
     tag: 33
     network: "{{ named_default_network_template }}"
     subnetmask: 27
     domain: "{{ named_default_domain }}"
     reversed: "{{ named_default_reversed_template }}"
-    ttl: "{{ named_default_ttl }}"
+    ttl: 18000
     log_level: "{{ named_default_log_level }}"
-    recursion: "no"
+    recursion: "yes"
   - name: SERVERS
     tag: 42
     network: "{{ named_default_network_template }}"
@@ -53,16 +54,16 @@ named_vlans:
     reversed: "{{ named_default_reversed_template }}"
     ttl: "{{ named_default_ttl }}"
     log_level: "{{ named_default_log_level }}"
-    recursion: "no"
-  - name: VPN
-    tag: 29
-    network: 10.29.29.0
-    subnetmask: 24
-    domain: "{{ named_default_domain }}"
-    reversed: 29.29.10
-    ttl: "{{ named_default_ttl }}"
-    log_level: "{{ named_default_log_level }}"
-    recursion: "no"
+    recursion: "yes"
+  # - name: VPN
+  #   tag: 29
+  #   network: 10.29.29.0
+  #   subnetmask: 24
+  #   domain: "{{ named_default_domain }}"
+  #   reversed: 29.29.10
+  #   ttl: 7200
+  #   log_level: "{{ named_default_log_level }}"
+  #   recursion: "yes"
 
 
 
