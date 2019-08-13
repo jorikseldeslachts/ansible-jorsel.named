@@ -1,4 +1,5 @@
 # Blacklist
+# https://serverfault.com/questions/828387/view-match-clients-works-only-with-subnet-not-with-single-ip-address
 acl "blacklist" {
 {% for item in named_blacklist %}
   {{ item }};
