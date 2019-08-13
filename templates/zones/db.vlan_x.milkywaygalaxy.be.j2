@@ -1,0 +1,27 @@
+; VLAN {{ item.tag }} {{ item.name }} - {{ item.network }}/{{ item.subnetmask }}
+
+$TTL {{ item.view.ttl }} 
+$ORIGIN {{ item.view.domain }}.
+
+@    IN    SOA    ns.{{ item.view.domain }}. {{ named_admin_user }}.{{ item.view.domain }}. (
+{# Results in:		2019070803		; serial #}
+            {{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}    ; serial
+            1D            ; refresh
+            1H            ; retry
+            1W            ; expire
+            3H            ; minimum ttl
+)
+
+; name servers - NS recors
+	IN	NS	ns.{{ item.view.domain }}.
+
+; name servers - A & CNAME records
+ns					IN	A		10.42.0.11
+dns2			    IN	CNAME	ns
+
+; A records
+gateway 			IN	A		10.33.0.1
+
+{% for record in item.view.view_records %}
+{# {{ record.name }}         IN  A       {{ record.ip }} #}
+{% endfor %}

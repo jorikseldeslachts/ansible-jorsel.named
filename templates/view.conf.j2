@@ -4,29 +4,24 @@ view "VLAN_{{ item.tag }}" {
     localhost;
   };
 
-  recursion {{ item.recursion }};
+  recursion {{ item.view.recursion }};
 
-  # Zone
-  zone "{{ item.domain }}" {
+  # Zone VLAN {{ item.tag }}
+  zone "VLAN_{{ item.tag }}.{{ item.view.domain }}" {
     type master;
-    file "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.domain }}";
+    file "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.view.domain }}";
   };
 
-  # Reverse zone
-  zone "{{ item.reversed|replace("tag", item.tag) }}.in-addr.arpa" {
+  # Reverse zone VLAN {{ item.tag }}
+  zone "VLAN_{{ item.tag }}.{{ item.reversed|replace("tag", item.tag) }}.in-addr.arpa" {
     type master;
     file "{{ named_config_path }}/reversed_zones/db.vlan_{{ item.tag }}.reversed";
   };
 
-};
+  # Common zone {{ item.view.domain }}
+  zone "common.{{ item.view.domain }}" {
+    type master;
+    file "{{ named_config_path }}/zones/db.common.{{ item.view.domain }}";
+  };
 
-{#
-# logging {
-#   channel bind.query.log {
-#     file "{{ named_default_log_path }}/query_log_vlan_{{ item.tag }}.log";
-#     print-time yes;
-#     severity debug {{ item.log_level }};
-#   };
-#   category queries { bind.query.log; };
-# };
-#}
+};

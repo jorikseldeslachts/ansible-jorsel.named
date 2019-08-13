@@ -72,15 +72,6 @@
 #     - "{{ named_vlans }}"
 
 
-# Configure Views
-- name: Configure views vor each vlan
-  template:
-    src: view.conf.j2
-    dest: "{{ named_config_path }}/views/view_vlan_{{ item.tag }}.conf"
-  with_items:
-    - "{{ named_vlans }}"
-  notify: restart named
-
 
 # Configure named.conf
 - name: Configure named.conf
@@ -93,22 +84,28 @@
     - "{{ named_vlans }}"
 
 
-# # Configure blacklist
-# - name: Configure blacklist
-#   template:
-#     src: blacklist.conf.j2
-#     dest: "{{ named_config_path }}/blacklist.conf"
-#   when: named_blacklist is defined
-  # notify: restart named
-
+# Configure Views 
+- name: Configure views for each vlan
+  template:
+    src: view.conf.j2
+    dest: "{{ named_config_path }}/views/view_vlan_{{ item.tag }}.conf"
+  with_items:
+    - "{{ named_vlans }}"
+  notify: restart named
 
 # Configure zonefiles + Reversed zone files
 - name: Configure zones files for each vlan
   template:
-    src: "zones/db.vlan_{{ item.tag }}.{{ item.domain }}.j2"
+    src: "zones/db.vlan_x.{{ named_default_domain }}.j2"
     dest: "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.domain }}"
   with_items:
     - "{{ named_vlans }}"
+  notify: restart named
+
+{# - name: Configure common zone file
+  template:
+    src: "zones/db.common.{{ named_default_domain }}.j2"
+    dest: "{{ named_config_path }}/zones/db.common.{{ named_default_domain }}"
   notify: restart named
 
 - name: Configure reversed zones files for each vlan
@@ -117,6 +114,14 @@
     dest: "{{ named_config_path }}/reversed_zones/db.vlan_{{ item.tag }}.reversed"
   with_items:
     - "{{ named_vlans }}"
-  notify: restart named
+  notify: restart named #}
 
 
+
+# # Configure blacklist
+# - name: Configure blacklist
+#   template:
+#     src: blacklist.conf.j2
+#     dest: "{{ named_config_path }}/blacklist.conf"
+#   when: named_blacklist is defined
+  # notify: restart named

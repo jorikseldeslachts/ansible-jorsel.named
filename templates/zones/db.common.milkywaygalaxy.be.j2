@@ -1,0 +1,72 @@
+; Common zone for all vlans (IP's that only occur in one subnet)
+; Dns names with multiple IP's in different subnets should be in views!
+
+$TTL {{ named_default_ttl }} 
+$ORIGIN {{ named_default_domain }}.
+
+@    IN    SOA    ns.{{ named_default_domain }}. {{ named_admin_user }}.{{ named_default_domain }}. (
+{# Results in:		2019070803		; serial #}
+            {{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}    ; serial
+            1D            ; refresh
+            1H            ; retry
+            1W            ; expire
+            3H            ; minimum
+)
+
+; name servers - NS recors
+	IN	NS	ns.{{ named_default_domain }}.
+
+; name servers - A & CNAME records
+ns					IN	A		10.42.0.11
+dns2			    IN	CNAME	ns
+
+; A records (Non view IP's)
+starlight			IN	A		10.32.0.2
+delta				IN	A		10.32.0.3
+nebula				IN	A		10.32.0.4
+andromeda			IN	A		10.32.0.5
+ap-1				IN	A		10.32.0.6
+ap-2				IN	A		10.32.0.7
+pandora-1			IN	A		10.32.0.8
+pandora-2			IN	A		10.32.0.9
+pandora-IPMI		IN	A		10.32.0.10
+omega       		IN	A		10.32.0.12
+atlantis-2    		IN	A		10.32.0.13
+synology			IN	A		10.32.0.14
+mc-1    			IN	A		10.32.0.15
+mc-2    			IN	A		10.32.0.16
+k8s-1   			IN	A		10.32.0.24
+k8s-2   			IN	A		10.32.0.25
+k8s-3   			IN	A		10.32.0.26
+
+
+ps4     			IN	A		10.33.0.4
+
+
+printer-1			IN	A		10.42.0.2
+printer-2			IN	A		10.42.0.3
+k8s-1				IN	A		10.42.0.4
+k8s-2				IN	A		10.42.0.5
+k8s-3				IN	A		10.42.0.6
+pandora-1			IN	A		10.42.0.8
+pandora-2			IN	A		10.42.0.9
+omega				IN	A		10.42.0.12
+atlantis   			IN	A		10.42.0.13
+
+
+homecontrol			IN	A		10.127.0.2
+alexa				IN	A		10.127.0.3
+hs110-4				IN	A		10.127.0.4
+hs110-5				IN	A		10.127.0.5
+hs110-6				IN	A		10.127.0.6
+hs110-7				IN	A		10.127.0.7
+hs110-8				IN	A		10.127.0.8
+hs110-9				IN	A		10.127.0.9
+chromecast-1		IN	A		10.127.0.11
+chromecast-2		IN	A		10.127.0.12
+
+
+; CNAME records
+nas					IN	CNAME 	synology
+backup				IN	CNAME 	synology
+pandora 			IN	CNAME	pandora-1
