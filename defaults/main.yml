@@ -6,7 +6,7 @@ named_default_reversed_template: 0.tag.10
 named_default_domain: milkywaygalaxy.be
 named_default_ttl: 86400
 named_default_log_path: /var/log/bind
-named_default_log_level: 3
+named_default_log_level: debug
 named_admin_user: jorik
 
 # service vars
@@ -33,6 +33,8 @@ named_vlans:
         view_records:
           - name: gateway
             ip: 1
+          - name: test
+            ip: 20
 
   - name: MANAGEMENT
     tag: 32
@@ -89,6 +91,10 @@ named_vlans:
         view_records:
           - name: gateway
             ip: 1
+
+
+
+
 
 
 

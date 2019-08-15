@@ -8,88 +8,88 @@
 # Logging configuration
 logging {
      channel default_log {
-          file "{{ named_default_log_path }}/default" versions 3 size 20m;
+          file "{{ named_default_log_path }}/default.log" versions 3 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel auth_servers_log {
-          file "{{ named_default_log_path }}/auth_servers" versions 100 size 20m;
+          file "{{ named_default_log_path }}/auth_servers.log" versions 100 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel dnssec_log {
-          file "{{ named_default_log_path }}/dnssec" versions 3 size 20m;
+          file "{{ named_default_log_path }}/dnssec.log" versions 3 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel zone_transfers_log {
-          file "{{ named_default_log_path }}/zone_transfers" versions 3 size 20m;
+          file "{{ named_default_log_path }}/zone_transfers.log" versions 3 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel ddns_log {
-          file "{{ named_default_log_path }}/ddns" versions 3 size 20m;
+          file "{{ named_default_log_path }}/ddns.log" versions 3 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+         severity {{ named_default_log_level }};
      };
      channel client_security_log {
-          file "{{ named_default_log_path }}/client_security" versions 3 size 20m;
+          file "{{ named_default_log_path }}/client_security.log" versions 3 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel rate_limiting_log {
-          file "{{ named_default_log_path }}/rate_limiting" versions 3 size 20m;
+          file "{{ named_default_log_path }}/rate_limiting.log" versions 3 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel rpz_log {
-          file "{{ named_default_log_path }}/rpz" versions 3 size 20m;
+          file "{{ named_default_log_path }}/rpz.log" versions 3 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel dnstap_log {
-          file "{{ named_default_log_path }}/dnstap" versions 3 size 20m;
+          file "{{ named_default_log_path }}/dnstap.log" versions 3 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel queries_log {
-          file "{{ named_default_log_path }}/queries" versions 600 size 20m;
+          file "{{ named_default_log_path }}/query.log" versions 600 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity info;
+          severity {{ named_default_log_level }};
      };
      channel query-errors_log {
-          file "{{ named_default_log_path }}/query-errors" versions 5 size 20m;
+          file "{{ named_default_log_path }}/query.error.log" versions 5 size 20m;
           print-time yes;
           print-category yes;
           print-severity yes;
-          severity dynamic;
+          severity {{ named_default_log_level }};
      };
      channel default_debug {
           print-time yes;
           print-category yes;
           print-severity yes;
           file "named.run";
-          severity dynamic;
+          severity {{ named_default_log_level }};
      };
 
 

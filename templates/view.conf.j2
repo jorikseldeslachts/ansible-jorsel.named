@@ -1,27 +1,28 @@
 view "VLAN_{{ item.tag }}" {
+
   match-clients { 
     {{ item.network|replace("tag", item.tag) }}/{{ item.subnetmask }};
     localhost;
   };
 
-  recursion {{ item.view.recursion }};
+  recursion {{ item.view[0].recursion }};
 
   # Zone VLAN {{ item.tag }}
-  zone "VLAN_{{ item.tag }}.{{ item.view.domain }}" {
+  zone "{{ item.name|lower }}.{{ item.view[0].domain }}" {
     type master;
-    file "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.view.domain }}";
+    file "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.view[0].domain }}";
   };
 
   # Reverse zone VLAN {{ item.tag }}
-  zone "VLAN_{{ item.tag }}.{{ item.reversed|replace("tag", item.tag) }}.in-addr.arpa" {
+  zone "{{ item.view[0].reversed|replace("tag", item.tag) }}.in-addr.arpa" {
     type master;
     file "{{ named_config_path }}/reversed_zones/db.vlan_{{ item.tag }}.reversed";
   };
 
-  # Common zone {{ item.view.domain }}
-  zone "common.{{ item.view.domain }}" {
+  # Common zone {{ item.view[0].domain }}
+  zone "{{ item.view[0].domain }}" {
     type master;
-    file "{{ named_config_path }}/zones/db.common.{{ item.view.domain }}";
+    file "{{ named_config_path }}/zones/db.common.{{ item.view[0].domain }}";
   };
 
 };

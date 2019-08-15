@@ -9,21 +9,16 @@
 
 
 # Create folder structure
-- name: Create bind9 directory
+- name: "Create all needed bind9 directories"
   file:
-    path: "{{ named_config_path }}"
+    path: "{{ item }}"
     state: directory
     mode: 0755
-
-- name: "Create all needed sub directories of {{ named_config_path }}"
-  file:
-    path: "{{ named_config_path }}/{{ item }}"
-    state: directory
   with_items:
-    - rndc_keys
-    - views
-    - zones
-    - reversed_zones
+    - "{{ named_config_path }}/rndc_keys"
+    - "{{ named_config_path }}/views"
+    - "{{ named_config_path }}/zones"
+    - "{{ named_config_path }}/reversed_zones"
 
 
 # Logging
@@ -94,27 +89,37 @@
   notify: restart named
 
 # Configure zonefiles + Reversed zone files
-- name: Configure zones files for each vlan
-  template:
-    src: "zones/db.vlan_x.{{ named_default_domain }}.j2"
-    dest: "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.domain }}"
-  with_items:
-    - "{{ named_vlans }}"
-  notify: restart named
-
-{# - name: Configure common zone file
+- name: Configure common zone file
   template:
     src: "zones/db.common.{{ named_default_domain }}.j2"
     dest: "{{ named_config_path }}/zones/db.common.{{ named_default_domain }}"
   notify: restart named
 
+- name: Configure common reversed zone file
+  template:
+    src: "reversed_zones/db.common.reversed.j2"
+    dest: "{{ named_config_path }}/reversed_zones/db.common.{{ named_default_domain }}.reversed"
+  notify: restart named
+
+- name: Configure zones files for each vlan
+  template:
+    src: "zones/db.vlan_x.{{ named_default_domain }}.j2"
+    dest: "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.view[0].domain }}"
+  with_items:
+    - "{{ named_vlans }}"
+  notify: restart named
+
 - name: Configure reversed zones files for each vlan
   template:
-    src: "reversed_zones/db.vlan_{{ item.tag }}.reversed.j2"
+    src: "reversed_zones/db.vlan_x.reversed.j2"
     dest: "{{ named_config_path }}/reversed_zones/db.vlan_{{ item.tag }}.reversed"
   with_items:
     - "{{ named_vlans }}"
-  notify: restart named #}
+  notify: restart named
+
+
+
+
 
 
 

@@ -1,0 +1,36 @@
+
+; VLAN {{ item.tag }} {{ item.name }} - REVERSED - {{ item.network|replace("tag", item.tag) }}/{{ item.subnetmask }}
+
+$TTL {{ item.view[0].ttl }} 
+; $ORIGIN {{ item.view[0].domain }}.
+
+@    IN    SOA    ns.{{ item.view[0].domain }}. {{ named_admin_user }}.{{ item.tag }}.{{ item.view[0].domain }}. (
+{# Results in:		2019070803		; serial #}
+            {{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}    ; serial
+            1D            ; refresh
+            1H            ; retry
+            1W            ; expire
+            3H            ; minimum
+)
+
+@       IN  NS      ns.{{ item.tag }}.{{ item.view[0].domain }}.
+11      IN  PTR     ns.{{ item.tag }}.{{ item.view[0].domain }}.
+
+; PTR records
+{% for record in item.view[0].view_records %}
+{{ record.ip }}     IN      PTR   {{ record.name }}.{{ item.name|lower }}.{{ item.view[0].domain }}.
+{% endfor %}
+
+
+
+
+{# 1       IN  PTR    deathstar.{{ item.view[0].domain }}.
+2       IN  PTR    printer-1.{{ item.view[0].domain }}.
+3       IN  PTR    printer-2.{{ item.view[0].domain }}.
+4       IN  PTR    k8s-1.{{ item.view[0].domain }}.
+5       IN  PTR    k8s-2.{{ item.view[0].domain }}.
+6       IN  PTR    k8s-3.{{ item.view[0].domain }}.
+8       IN  PTR    pandora-1.{{ item.view[0].domain }}.
+9       IN  PTR    pandora-2.{{ item.view[0].domain }}.
+12      IN  PTR    omega.{{ item.view[0].domain }}.
+13      IN  PTR    atlantis.{{ item.view[0].domain }}. #}

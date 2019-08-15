@@ -1,9 +1,10 @@
-; VLAN {{ item.tag }} {{ item.name }} - {{ item.network }}/{{ item.subnetmask }}
 
-$TTL {{ item.view.ttl }} 
-$ORIGIN {{ item.view.domain }}.
+; VLAN {{ item.tag }} {{ item.name }} - FORWARD - {{ item.network|replace("tag", item.tag) }}/{{ item.subnetmask }}
 
-@    IN    SOA    ns.{{ item.view.domain }}. {{ named_admin_user }}.{{ item.view.domain }}. (
+$TTL {{ item.view[0].ttl }} 
+; $ORIGIN {{ item.view[0].domain }}.
+
+@    IN    SOA    ns.{{ item.view[0].domain }}. {{ named_admin_user }}.{{ item.view[0].domain }}. (
 {# Results in:		2019070803		; serial #}
             {{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}    ; serial
             1D            ; refresh
@@ -13,15 +14,14 @@ $ORIGIN {{ item.view.domain }}.
 )
 
 ; name servers - NS recors
-	IN	NS	ns.{{ item.view.domain }}.
+	IN	NS	ns.{{ item.view[0].domain }}.
 
 ; name servers - A & CNAME records
-ns					IN	A		10.42.0.11
+ns					IN	A		10.{{ item.tag }}.0.11
 dns2			    IN	CNAME	ns
 
 ; A records
-gateway 			IN	A		10.33.0.1
-
-{% for record in item.view.view_records %}
-{# {{ record.name }}         IN  A       {{ record.ip }} #}
+{% for record in item.view[0].view_records %}
+{{ record.name }}         IN  A       {{ item.network.split('.')[0:3] | join('.') | replace("tag", item.tag) }}.{{ record.ip }}
 {% endfor %}
+

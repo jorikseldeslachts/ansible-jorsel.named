@@ -28,24 +28,24 @@ options {
   allow-recursion { none; };
 
   # Who can query the server
-  allow-query { none; };
-  {# allow-query { whitelist; }; #}
+  allow-query { any; };
+{#  allow-query { whitelist; }; #}
 
   # Who has access to records in cache
-  allow-query-cache { none; };
-  {# allow-query-cache { whitelist; }; #}
+  allow-query-cache { any; };
+{#  allow-query-cache { whitelist; }; #}
 
   # DNS security
   dnssec-enable yes;
-  dnssec-validation yes; # auto;
+  dnssec-validation yes; # auto; 
 
   # Dont allow any transfers since we have no master/slaves
   allow-transfer { none; };
 
   # conform to RFC1035
   auth-nxdomain no;
-  {# # Upstream DNS servers
-
+{#  # Upstream DNS servers
+ 
   # forwarders {
   # 	{% for server in named_upstream_dns_servers %}
   # 	{{ server }};

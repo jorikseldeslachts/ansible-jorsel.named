@@ -1,0 +1,24 @@
+
+; Common reversed zone for all vlans (IP's that only occur in one subnet)
+; Dns names with multiple IP's in different subnets should be in views!
+
+$TTL {{ named_default_ttl }} 
+; $ORIGIN {{ named_default_domain }}.
+
+@    IN    SOA    ns.{{ named_default_domain }}. {{ named_admin_user }}.{{ named_default_domain }}. (
+{# Results in:		2019070803		; serial #}
+            {{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.minute }}    ; serial
+            1D            ; refresh
+            1H            ; retry
+            1W            ; expire
+            3H            ; minimum ttl
+)
+
+; name servers - NS recors
+	IN	NS	ns.{{ named_default_domain }}.
+
+; name servers - A & CNAME records
+ns					IN	A		10.42.0.11
+dns2			    IN	CNAME	ns
+
+; A records
