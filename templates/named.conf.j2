@@ -9,11 +9,13 @@
 include "{{ named_config_path }}/blacklist.conf";
 {% endif %} #}
 
+
 # include Logging
 include "{{ named_config_path }}/logging.conf";
 
 # Options
 options {
+  
   # Listening address/port
   listen-on port 53 { 127.0.0.1; any; };
 
@@ -61,14 +63,16 @@ options {
   # Blacklist
   blackhole { blacklist; };
 {% endif %} #}
-
 };
 
 
 # include Views
-{% for vlan in named_vlans %}
-include "{{ named_config_path }}/views/view_vlan_{{ vlan.tag }}.conf";
+{% for dns_zone in dns_zones %}
+{% for network in dns_zone.networks %}
+include "{{ named_config_path }}/views/view_vlan_{{ network.vlan_tag }}.conf";
 {% endfor %}
+{% endfor %}
+
 
 
 {# 

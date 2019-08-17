@@ -15,26 +15,26 @@
     state: directory
     mode: 0755
   with_items:
-    - "{{ named_config_path }}/rndc_keys"
+    # - "{{ named_config_path }}/rndc_keys"
     - "{{ named_config_path }}/views"
     - "{{ named_config_path }}/zones"
     - "{{ named_config_path }}/reversed_zones"
 
 
 # Logging
-- name: Create logging directory
-  file:
-    path: "{{ named_default_log_path }}"
-    state: directory
-    owner: "{{ named_user }}"
-    group: "{{ named_user }}"
-    mode: 755
+# - name: Create logging directory
+#   file:
+#     path: "{{ named_default_log_path }}"
+#     state: directory
+#     owner: "{{ named_user }}"
+#     group: "{{ named_user }}"
+#     mode: 755
 
-- name: Configure logging
-  template:
-    src: logging.conf.j2
-    dest: "{{ named_config_path }}/logging.conf"
-  notify: restart named
+# - name: Configure logging
+#   template:
+#     src: logging.conf.j2
+#     dest: "{{ named_config_path }}/logging.conf"
+#   notify: restart named
 
 
 # # debug
@@ -69,53 +69,69 @@
 
 
 # Configure named.conf
-- name: Configure named.conf
-  template:
-    src: named.conf.j2
-    dest: "{{ named_config_path }}/named.conf"
-    mode: 0644
-  notify: restart named
-  with_items:
-    - "{{ named_vlans }}"
+# - name: Configure named.conf
+#   template:
+#     src: named.conf.j2
+#     dest: "{{ named_config_path }}/named.conf"
+#     mode: 0644
+#   notify: restart named
 
 
-# Configure Views 
-- name: Configure views for each vlan
-  template:
-    src: view.conf.j2
-    dest: "{{ named_config_path }}/views/view_vlan_{{ item.tag }}.conf"
-  with_items:
-    - "{{ named_vlans }}"
-  notify: restart named
+# example
+# https://www.techbeatly.com/2018/07/ansible-nested-loop-with-list-and-dictionary.html/
+# - name: Debug dns records per network per domain
+#   debug:
+#     msg:
+#       - "domain = {{ item.0.domain }}"
+#       - "network = {{ item.1.name }}"
+#       - "dns_records = {{ item.1.dns_records }}"
+#   with_subelements:
+#     - "{{ dns_zones }}"
+#     - networks
+
+
+# # Configure Views 
+# - name: Configure views for each vlan
+#   template:
+#     src: view.conf.j2
+#     dest: "{{ named_config_path }}/views/view_vlan_{{ item.1.vlan_tag }}.conf"
+#   with_subelements:
+#     - "{{ dns_zones }}"
+#     - networks
+#   notify: restart named
 
 # Configure zonefiles + Reversed zone files
 - name: Configure common zone file
   template:
-    src: "zones/db.common.{{ named_default_domain }}.j2"
-    dest: "{{ named_config_path }}/zones/db.common.{{ named_default_domain }}"
+    src: "zones/db.domain.j2"
+    dest: "{{ named_config_path }}/zones/db.{{ item.0.domain }}"
+  with_subelements:
+    - "{{ dns_zones }}"
+    - networks
   notify: restart named
 
-- name: Configure common reversed zone file
-  template:
-    src: "reversed_zones/db.common.reversed.j2"
-    dest: "{{ named_config_path }}/reversed_zones/db.common.{{ named_default_domain }}.reversed"
-  notify: restart named
 
-- name: Configure zones files for each vlan
-  template:
-    src: "zones/db.vlan_x.{{ named_default_domain }}.j2"
-    dest: "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.view[0].domain }}"
-  with_items:
-    - "{{ named_vlans }}"
-  notify: restart named
+# - name: Configure common reversed zone file
+#   template:
+#     src: "reversed_zones/db.common.reversed.j2"
+#     dest: "{{ named_config_path }}/reversed_zones/db.common.{{ named_default_domain }}.reversed"
+#   notify: restart named
 
-- name: Configure reversed zones files for each vlan
-  template:
-    src: "reversed_zones/db.vlan_x.reversed.j2"
-    dest: "{{ named_config_path }}/reversed_zones/db.vlan_{{ item.tag }}.reversed"
-  with_items:
-    - "{{ named_vlans }}"
-  notify: restart named
+# - name: Configure zones files for each vlan
+#   template:
+#     src: "zones/db.vlan_x.{{ named_default_domain }}.j2"
+#     dest: "{{ named_config_path }}/zones/db.vlan_{{ item.tag }}.{{ item.view[0].domain }}"
+#   with_items:
+#     - "{{ named_vlans }}"
+#   notify: restart named
+
+# - name: Configure reversed zones files for each vlan
+#   template:
+#     src: "reversed_zones/db.vlan_x.reversed.j2"
+#     dest: "{{ named_config_path }}/reversed_zones/db.vlan_{{ item.tag }}.reversed"
+#   with_items:
+#     - "{{ named_vlans }}"
+#   notify: restart named
 
 
 
