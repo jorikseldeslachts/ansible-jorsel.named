@@ -23,7 +23,7 @@ view "VLAN_{{ item.1.vlan_tag }}" {
   # Common zone {{ item.0.domain }}
   zone "{{ item.0.domain }}" {
     type master;
-    file "{{ named_config_path }}/zones/db.common.{{ item.0.domain }}";
+    file "{{ named_config_path }}/zones/db.{{ item.0.domain }}";
   };
 
 };
