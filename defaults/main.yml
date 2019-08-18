@@ -1,10 +1,6 @@
 ---
 
 # default values if not overridden
-# named_default_network_template: 10.tag.0.0
-# named_default_reversed_template: 0.tag.10
-# named_default_domain: milkywaygalaxy.be
-
 named_default_ttl: 86400
 named_default_log_path: /var/log/bind
 named_default_log_level: debug
@@ -20,15 +16,6 @@ named_blacklist: [
   forbidden.be
 ]
 
-# dns_zones: 
-#   - domain: milkywaygalaxy.be
-#     networks:
-#       - name: WIFI
-#         view:
-#           - recursion: "yes"
-#             view_records:
-
-
 # DNS setup
 dns_zones: 
   - domain: milkywaygalaxy.be
@@ -41,20 +28,19 @@ dns_zones:
         subnetmask: 27
         ttl: 18000
         log_level: "{{ named_default_log_level }}"
-        dns_records:
-          - type: A
-            value: wifi-test
-            target: 66
+        dns_records: []
+          # - type: A
+          #   value: wifi-test
+          #   target: 66
         view:
           - recursion: "yes"
             view_records:
               - type: A
                 value: gateway
                 target: 1
-              - type: A
-                value: test
-                target: 20
-
+              # - type: A
+              #   value: test
+              #   target: 20
 
       - name: LAN
         vlan_tag: 33
@@ -72,88 +58,83 @@ dns_zones:
               - type: A
                 value: gateway
                 target: 1
-              
 
-
-      # - name: MANAGEMENT
-      #   vlan_tag: 32
-      #   network: 10.32.0.0
-      #   subnetmask: 27
-      #   ttl: "{{ named_default_ttl }}"
-      #   log_level: "{{ named_default_log_level }}"
-      #   dns_records:
-      #     - type: A
-      #       value: starlight
-      #       target: 2
-      #     - type: A
-      #       value: delta
-      #       target: 3
-      #     - type: A
-      #       value: nebula
-      #       target: 4
-      #     - type: A
-      #       value: andromeda
-      #       target: 5
-      #     - type: A
-      #       value: ap-1
-      #       target: 6
-      #     - type: A
-      #       value: ap-2
-      #       target: 7
-      #     - type: A
-      #       value: pandora-1
-      #       target: 8
-      #     - type: A
-      #       value: pandora-2
-      #       target: 9
-      #     - type: A
-      #       value: pandora-IPMI
-      #       target: 10
-      #     - type: A
-      #       value: dns
-      #       target: 11
-      #     - type: A
-      #       value: omega
-      #       target: 12
-      #     - type: A
-      #       value: atlantis-2
-      #       target: 13
-      #     - type: A
-      #       value: synology
-      #       target: 14
-      #     - type: A
-      #       value: mc-1
-      #       target: 15
-      #     - type: A
-      #       value: mc-2
-      #       target: 16
-      #     - type: A
-      #       value: k8s-1
-      #       target: 24
-      #     - type: A
-      #       value: k8s-2
-      #       target: 25
-      #     - type: A
-      #       value: k8s-3
-      #       target: 26
-      #     - type: CNAME
-      #       value: nas
-      #       target: synology
-      #     - type: CNAME
-      #       value: backup
-      #       target: synology
-      #     - type: CNAME
-      #       value: pandora
-      #       target: pandora-1
-      #   view:
-      #     - recursion: "no"
-      #       view_records:
-      #         - type: A
-      #           value: gateway
-      #           target: 1
-              
-
-
+      - name: MANAGEMENT
+        vlan_tag: 32
+        network: 10.32.0.0
+        subnetmask: 27
+        ttl: "{{ named_default_ttl }}"
+        log_level: "{{ named_default_log_level }}"
+        dns_records:
+          - type: A
+            value: starlight
+            target: 2
+          - type: A
+            value: delta
+            target: 3
+          - type: A
+            value: nebula
+            target: 4
+          - type: A
+            value: andromeda
+            target: 5
+          - type: A
+            value: ap-1
+            target: 6
+          - type: A
+            value: ap-2
+            target: 7
+          - type: A
+            value: pandora-1
+            target: 8
+          - type: A
+            value: pandora-2
+            target: 9
+          - type: A
+            value: pandora-IPMI
+            target: 10
+          # - type: A
+          #   value: dns
+          #   target: 11
+          - type: A
+            value: omega
+            target: 12
+          - type: A
+            value: atlantis-2
+            target: 13
+          - type: A
+            value: synology
+            target: 14
+          - type: A
+            value: mc-1
+            target: 15
+          - type: A
+            value: mc-2
+            target: 16
+          - type: A
+            value: k8s-1
+            target: 24
+          - type: A
+            value: k8s-2
+            target: 25
+          - type: A
+            value: k8s-3
+            target: 26
+          - type: CNAME
+            value: nas
+            target: synology
+          - type: CNAME
+            value: backup
+            target: synology
+          - type: CNAME
+            value: pandora
+            target: pandora-1
+        view:
+          - recursion: "no"
+            view_records:
+              - type: A
+                value: gateway
+                target: 1
 
       - name: SERVERS
         vlan_tag: 42
@@ -169,7 +150,7 @@ dns_zones:
             value: printer-1
             target: 2
           - type: A
-            value: printer-3
+            value: printer-2
             target: 3
           - type: A
             value: k8s-1
@@ -208,152 +189,68 @@ dns_zones:
                 value: gateway
                 target: 1
 
+      - name: IOT
+        vlan_tag: 127
+        network: 10.127.0.0
+        subnetmask: 27
+        ttl: 7200
+        dns_records:
+          - type: A
+            value: homecontrol
+            target: 2
+          - type: A
+            value: alexa
+            target: 3
+          - type: A
+            value: hs110-4
+            target: 4
+          - type: A
+            value: hs110-5
+            target: 5
+          - type: A
+            value: hs110-6
+            target: 6
+          - type: A
+            value: hs110-7
+            target: 7
+          - type: A
+            value: hs110-8
+            target: 8
+          - type: A
+            value: hs110-9
+            target: 9
+          - type: A
+            value: chromecast-1
+            target: 11
+          - type: A
+            value: chromecast-1
+            target: 12
+        view:
+          - recursion: "no"
+            view_records:
+              - type: A
+                value: gateway
+                target: 1
 
-      # - name: IOT
-      #   vlan_tag: 127
-      #   network: 10.127.0.0
-      #   subnetmask: 27
-      #   ttl: 7200
-      #   dns_records:
-      #     - type: A
-      #       value: homecontrol
-      #       target: 2
-      #     - type: A
-      #       value: alexa
-      #       target: 3
-      #     - type: A
-      #       value: hs110-4
-      #       target: 4
-      #     - type: A
-      #       value: hs110-5
-      #       target: 5
-      #     - type: A
-      #       value: hs110-6
-      #       target: 6
-      #     - type: A
-      #       value: hs110-7
-      #       target: 7
-      #     - type: A
-      #       value: hs110-8
-      #       target: 8
-      #     - type: A
-      #       value: hs110-9
-      #       target: 9
-      #     - type: A
-      #       value: chromecast-1
-      #       target: 11
-      #     - type: A
-      #       value: chromecast-1
-      #       target: 12
-      #   view:
-      #     - recursion: "no"
-      #       view_records:
-      #         - type: A
-      #           value: gateway
-      #           target: 1
-
-
-      # - name: VPN
-      #   vlan_tag: 29
-      #   network: 10.29.29.0
-      #   subnetmask: 24
-      #   ttl: 7200
-      #   log_level: "{{ named_default_log_level }}"
-      #   dns_records:
-      #     - type: A
-      #       value: deathstar
-      #       target: 1
-      #   view:
-      #     - recursion: "yes"
-      #       view_records:
-      #         - type: A
-      #           value: gateway
-      #           target: 1
+      - name: VPN
+        vlan_tag: 29
+        network: 10.29.29.0
+        subnetmask: 24
+        ttl: 7200
+        log_level: "{{ named_default_log_level }}"
+        dns_records: []
+          # - type: A
+          #   value: deathstar
+          #   target: 1
+        view:
+          - recursion: "yes"
+            view_records:
+              - type: A
+                value: gateway
+                target: 1
               
 
 
-
-
-
-
-
-
-
-######################################################################################################
-
-# # VLAN setup for views
-# named_vlans:
-#   - name: WIFI
-#     tag: 11
-#     network: "{{ named_default_network_template }}"
-#     subnetmask: 27 
-#     view:
-#       - domain: "{{ named_default_domain }}"
-#         reversed: "{{ named_default_reversed_template }}"
-#         ttl: 18000
-#         log_level: "{{ named_default_log_level }}"
-#         recursion: "yes"
-#         view_records:
-#           - name: gateway
-#             ip: 1
-#           - name: test
-#             ip: 20
-
-#   - name: MANAGEMENT
-#     tag: 32
-#     network: "{{ named_default_network_template }}"
-#     subnetmask: 27
-#     view:
-#       - domain: "{{ named_default_domain }}"
-#         reversed: "{{ named_default_reversed_template }}"
-#         ttl: "{{ named_default_ttl }}"
-#         log_level: "{{ named_default_log_level }}"
-#         recursion: "no"
-#         view_records:
-#           - name: gateway
-#             ip: 1
-
-#   - name: LAN
-#     tag: 33
-#     network: "{{ named_default_network_template }}"
-#     subnetmask: 27
-#     view:
-#       - domain: "{{ named_default_domain }}"
-#         reversed: "{{ named_default_reversed_template }}"
-#         ttl: 18000
-#         log_level: "{{ named_default_log_level }}"
-#         recursion: "yes"
-#         view_records:
-#           - name: gateway
-#             ip: 1
-
-#   - name: SERVERS
-#     tag: 42
-#     network: "{{ named_default_network_template }}"
-#     subnetmask: 28
-#     view:
-#       - domain: "{{ named_default_domain }}"
-#         reversed: "{{ named_default_reversed_template }}"
-#         ttl: "{{ named_default_ttl }}"
-#         log_level: "{{ named_default_log_level }}"
-#         recursion: "yes"
-#         view_records:
-#           - name: gateway
-#             ip: 1
-
-#   - name: VPN
-#     tag: 29
-#     network: 10.29.29.0
-#     subnetmask: 24
-#     view:
-#       - domain: "{{ named_default_domain }}"
-#         reversed: 29.29.10
-#         ttl: 7200
-#         log_level: "{{ named_default_log_level }}"
-#         recursion: "yes"
-#         view_records:
-#           - name: gateway
-#             ip: 1
 
 
 
