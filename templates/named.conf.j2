@@ -1,14 +1,11 @@
-
 {# # Include rndc-keys
 # {% for vlan in named_vlans %}
 # {{ subnet }};
 # {% endfor %} #}
-
 {# {% if named_blacklist is defined %}
 # include Blacklist
 include "{{ named_config_path }}/blacklist.conf";
 {% endif %} #}
-
 
 # include Logging
 include "{{ named_config_path }}/logging.conf";
@@ -46,7 +43,8 @@ options {
 
   # conform to RFC1035
   auth-nxdomain no;
-{#  # Upstream DNS servers
+{# 
+ # Upstream DNS servers
  
   # forwarders {
   # 	{% for server in named_upstream_dns_servers %}
@@ -62,7 +60,8 @@ options {
 {# {% if named_blacklist is defined %}
   # Blacklist
   blackhole { blacklist; };
-{% endif %} #}
+{% endif %} 
+#}
 };
 
 
