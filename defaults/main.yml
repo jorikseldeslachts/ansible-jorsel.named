@@ -67,6 +67,9 @@ dns_zones:
         log_level: "{{ named_default_log_level }}"
         dns_records:
           - type: A
+            value: deathstar
+            target: 1
+          - type: A
             value: starlight
             target: 2
           - type: A
@@ -143,9 +146,6 @@ dns_zones:
         ttl: "{{ named_default_ttl }}"
         log_level: "{{ named_default_log_level }}"
         dns_records:
-          - type: A
-            value: deathstar
-            target: 1
           - type: A
             value: printer-1
             target: 2

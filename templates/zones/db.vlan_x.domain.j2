@@ -1,12 +1,11 @@
 ;
-; Common zone for all vlans (IP's that only occur in one subnet)
-; DNS names with multiple IP's in different subnets should be in views!
+; VLAN {{ item.1.vlan_tag }} {{ item.1.name }} - {{ item.1.network }}/{{ item.1.subnetmask }}
 ;
 
 ;
 ; Time to live
 ;
-$TTL {{ named_default_ttl }} 
+$TTL {{ item.1.ttl }} 
 {# ; $ORIGIN {{ item.0.domain }}. #}
 
 ;
@@ -26,35 +25,15 @@ $TTL {{ named_default_ttl }}
 ;
 {{ '%-15s'|format("") }}      IN  {{ '%-8s'|format("NS") }}    ns.{{ item.0.domain }}.
 
-{# 
-===> LOGICA:
-loop over dns_zones
-if dns_zone.domain =  item.0.domain
-dan loop over networks
-loop over records van network 
-#}
-
-{# loop domains #}
-{% for dns_zone in dns_zones %}
-{# if domain is current domain #}
-{% if dns_zone.domain == item.0.domain %}
-{# loop networks #}
-{% for network in dns_zone.networks %}
 ;
-; records (non view) for {{ network.network }}/{{ network.subnetmask }} - VLAN {{ network.vlan_tag }} {{ network.name }}
+; records (view specific) for {{ item.1.network }}/{{ item.1.subnetmask }} - VLAN {{ item.1.vlan_tag }} {{ item.1.name }}
 ;
-{# loop records per network #}
-{% for record in network.dns_records %}
+{% for record in item.1.view.0.view_records %}
 {# A records #}
 {% if record.type == "A" %}
-{{ '%-15s'|format(record.value) }}      IN  {{ '%-8s'|format(record.type) }}    {{ '%-20s'|format(network.network.split('.')[0:3] |join('.')+"."+record.target |string) }}
+{{ '%-15s'|format(record.value) }}      IN  {{ '%-8s'|format(record.type) }}    {{ '%-20s'|format(item.1.network.split('.')[0:3] |join('.')+"."+record.target |string) }}
 {# CNAME records #}
 {% elif record.type == "CNAME" %}
 {{ '%-15s'|format(record.value) }}      IN  {{ '%-8s'|format(record.type) }}    {{ '%-20s'|format(record.target |string) }}
-{% endif %}
-{% endfor %}
-
-
-{% endfor %}
 {% endif %}
 {% endfor %}

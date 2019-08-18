@@ -7,6 +7,7 @@ view "VLAN_{{ item.1.vlan_tag }}" {
   };
 
   recursion {{ item.1.view.0.recursion }};
+  allow-recursion { any; };
 
   # Zone VLAN {{ item.1.vlan_tag }}
   zone "{{ item.1.name|lower }}.{{ item.0.domain }}" {
@@ -20,7 +21,7 @@ view "VLAN_{{ item.1.vlan_tag }}" {
     file "{{ named_config_path }}/reversed_zones/db.vlan_{{ item.1.vlan_tag }}.reversed";
   };
 
-  # Common zone {{ item.0.domain }}
+  # Zone {{ item.0.domain }}
   zone "{{ item.0.domain }}" {
     type master;
     file "{{ named_config_path }}/zones/db.{{ item.0.domain }}";
