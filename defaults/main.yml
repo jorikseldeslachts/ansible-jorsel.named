@@ -152,14 +152,14 @@ dns_zones:
           - type: A
             value: printer-2
             target: 3
-          - type: A
-            value: k8s-1
-            target: 4
-          - type: A
-            value: k8s-2
-            target: 5
-          - type: A
-            value: k8s-3
+          # - type: A
+          #   value: k8s-1
+          #   target: 4
+          # - type: A
+          #   value: k8s-2
+          #   target: 5
+          # - type: A
+          #   value: k8s-3
             target: 6
           - type: A
             value: pandora-1
@@ -181,6 +181,9 @@ dns_zones:
             target: ns
           - type: CNAME
             value: dns2
+            target: ns
+          - type: CNAME
+            value: dns-api
             target: ns
         view:
           - recursion: "no"
@@ -223,7 +226,7 @@ dns_zones:
             value: chromecast-1
             target: 11
           - type: A
-            value: chromecast-1
+            value: chromecast-2
             target: 12
         view:
           - recursion: "no"
