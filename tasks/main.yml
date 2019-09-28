@@ -6,3 +6,7 @@
 - name: Include Debian tasks
   include: debian.yml
   when: ansible_os_family == "Debian"
+
+- name: Include installation of dns-api
+  include: dns-api.yml
+  when: install_dns_api |bool

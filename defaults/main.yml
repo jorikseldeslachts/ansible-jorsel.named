@@ -1,5 +1,16 @@
 ---
 
+# api to sync from cloudflare
+install_dns_api: yes
+dns_api_name: dns-api
+dns_api_git_repo: "git@gitlab.com:milkywaygalaxy/api/dns-api.git"
+dns_api_git_key: /root/.ssh/git.key
+dns_api_service_user: bind
+dns_api_service_group: bind
+dns_api_service_port: 8053
+dns_api_service_flask_app: main.py
+
+
 # default values if not overridden
 named_default_ttl: 86400
 named_default_log_path: /var/log/bind

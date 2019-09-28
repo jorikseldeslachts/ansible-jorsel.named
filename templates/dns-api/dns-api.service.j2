@@ -1,0 +1,13 @@
+[Unit]
+Description=Home DNS API Flask Server
+After=network.target
+
+[Service]
+User={{dns_api_service_user}}
+Group={{dns_api_service_group}}
+WorkingDirectory={{named_config_path}}/{{dns_api_name}}
+ExecStart=FLASK_APP={{named_config_path}}/{{dns_api_name}}/{{dns_api_service_flask_app}} flask run --host=0.0.0.0 --port={{dns_api_service_port}} 
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

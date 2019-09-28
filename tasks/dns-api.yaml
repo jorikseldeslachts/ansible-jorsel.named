@@ -1,0 +1,48 @@
+
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - python3-pip 
+    - python3-dev
+    - python3-setuptools
+    - build-essential
+    - libssl-dev
+    - libffi-dev
+    - git
+
+- name: Copy git ssh key
+  template:
+    src: git.key
+    dest: "{{dns_api_git_key}}"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: "Clone API project from Gitlab: {{dns_api_name}}"
+  git:
+    repo: "{{dns_api_git_repo}}"
+    key_file: "{{dns_api_git_key}}"
+    dest: "{{named_config_path}}/{{dns_api_name}}"
+
+- name: Install python requirements.txt
+  shell: >
+    "pip3 install -r {{named_config_path}}/{{dns_api_name}}/requirements.txt"
+
+- name: Configure dns-api service
+  template:
+    src: dns-api/dns-api.service.j2
+    dest: "/etc/systemd/system/{{dns_api_name}}.service"
+
+- name: Force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+
+- name: Start and enable service
+  systemd:
+    name: "{{dns_api_name}}.service"
+    state: restarted
+    enabled: yes
+
