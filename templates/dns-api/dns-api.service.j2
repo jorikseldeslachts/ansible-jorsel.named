@@ -9,8 +9,10 @@ User=root
 Group=root
 
 WorkingDirectory={{named_config_path}}/{{dns_api_name}}
-Environment=API_DEBUG={{dns_api_debug_mode}}
-# Environment=FLASK_DEBUG=1
+{%if dns_api_debug_mode %}
+Environment=API_DEBUG=True
+Environment=FLASK_DEBUG=1
+{%endif%}
 Environment=LOCAL_DNS_FILE={{dns_api_local_dns_file}}
 Environment=FLASK_APP={{named_config_path}}/{{dns_api_name}}/{{dns_api_service_flask_app}}
 ExecStart={{dns_api_service_flask_executable}} run --host=0.0.0.0 --port={{dns_api_service_port}}
