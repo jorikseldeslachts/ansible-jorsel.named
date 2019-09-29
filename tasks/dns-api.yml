@@ -15,21 +15,33 @@
 
 - name: Copy git ssh key
   template:
-    src: git.key
+    src: dns-api/git.key
     dest: "{{dns_api_git_key}}"
     owner: root
     group: root
     mode: 0600
 
-- name: "Clone API project from Gitlab: {{dns_api_name}}"
+- name: "Create API direction: {{named_config_path}}/{{dns_api_name}}"
+  file:
+    state: directory
+    path: "{{named_config_path}}/{{dns_api_name}}"
+    recurse: yes
+    owner: "{{dns_api_service_user}}"
+    group: "{{dns_api_service_group}}"
+
+- name: "Clone API project from Gitlab: {{dns_api_git_repo}}"
   git:
     repo: "{{dns_api_git_repo}}"
     key_file: "{{dns_api_git_key}}"
+    version: master
     dest: "{{named_config_path}}/{{dns_api_name}}"
+    force: yes
+    accept_hostkey: yes
 
-- name: Install python requirements.txt
-  shell: >
-    "pip3 install -r {{named_config_path}}/{{dns_api_name}}/requirements.txt"
+- name: Pip3 install python requirements.txt
+  command: /usr/bin/pip3 install -r requirements.txt
+  args:
+    chdir: "{{named_config_path}}/{{dns_api_name}}"
 
 - name: Configure dns-api service
   template:

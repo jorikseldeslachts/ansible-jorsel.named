@@ -3,10 +3,17 @@ Description=Home DNS API Flask Server
 After=network.target
 
 [Service]
-User={{dns_api_service_user}}
-Group={{dns_api_service_group}}
+# User={{dns_api_service_user}}
+# Group={{dns_api_service_group}}
+User=root
+Group=root
+
 WorkingDirectory={{named_config_path}}/{{dns_api_name}}
-ExecStart=FLASK_APP={{named_config_path}}/{{dns_api_name}}/{{dns_api_service_flask_app}} flask run --host=0.0.0.0 --port={{dns_api_service_port}} 
+Environment=API_DEBUG={{dns_api_debug_mode}}
+# Environment=FLASK_DEBUG=1
+Environment=LOCAL_DNS_FILE={{dns_api_local_dns_file}}
+Environment=FLASK_APP={{named_config_path}}/{{dns_api_name}}/{{dns_api_service_flask_app}}
+ExecStart={{dns_api_service_flask_executable}} run --host=0.0.0.0 --port={{dns_api_service_port}}
 Restart=always
 
 [Install]
