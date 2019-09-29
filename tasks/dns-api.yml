@@ -58,3 +58,18 @@
     state: restarted
     enabled: yes
 
+- name: "Set Cronjob to sync local records with Cloudflare: on reboot"
+  cron:
+    name: "Sync Cloudflare records with local DNS records (reboot)"
+    state: present
+    job: curl localhost:8053/sync/cloudflare/dns/5f1656d5a51016de926806ab2a22c0f73
+    special_time: "reboot"
+
+- name: "Set Cronjob to sync local records with Cloudflare: every hour"
+  cron:
+    name: "Sync Cloudflare records with local DNS records (hourly)"
+    state: present
+    job: curl localhost:8053/sync/cloudflare/dns/5f1656d5a51016de926806ab2a22c0f73
+    minute: "0"
+    hour: "*"
+
