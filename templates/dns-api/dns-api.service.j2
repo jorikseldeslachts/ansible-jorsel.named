@@ -3,10 +3,10 @@ Description=Home DNS API Flask Server
 After=network.target
 
 [Service]
-# User={{dns_api_service_user}}
-# Group={{dns_api_service_group}}
-User=root
-Group=root
+User={{dns_api_service_user}}
+Group={{dns_api_service_group}}
+# User=root
+# Group=root
 
 WorkingDirectory={{named_config_path}}/{{dns_api_name}}
 {%if dns_api_debug_mode %}

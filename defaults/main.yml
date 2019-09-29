@@ -5,8 +5,8 @@ install_dns_api: yes
 dns_api_name: dns-api
 dns_api_git_repo: "git@gitlab.com:milkywaygalaxy/api/dns-api.git"
 dns_api_git_key: /root/.ssh/git.key
-dns_api_service_user: bind
-dns_api_service_group: bind
+dns_api_service_user: "{{named_user}}"
+dns_api_service_group: "{{named_user}}"
 dns_api_service_port: 8053
 dns_api_service_flask_app: main.py
 dns_api_service_flask_executable: /usr/local/bin/flask

@@ -115,7 +115,13 @@
   notify: restart named
 
 
-
+- name: Set correct user and group on configurations
+  file:
+    path: "{{named_config_path}}"
+    state: directory
+    recurse: yes
+    owner: "{{named_user}}"
+    group: "{{named_user}}"
 
 
 # # Configure blacklist
