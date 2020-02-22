@@ -1,5 +1,5 @@
 [Unit]
-Description=Home DNS API Flask Server
+Description=Home DNS FastAPI Server
 After=network.target
 
 [Service]
@@ -11,12 +11,10 @@ Group={{dns_api_service_group}}
 WorkingDirectory={{named_config_path}}/{{dns_api_name}}
 {%if dns_api_debug_mode %}
 Environment=API_DEBUG=True
-Environment=FLASK_DEBUG=1
 {%endif%}
 Environment=DNS_SERVICE={{named_service_name}}
 Environment=LOCAL_DNS_FILE={{dns_api_local_dns_file}}
-Environment=FLASK_APP={{named_config_path}}/{{dns_api_name}}/{{dns_api_service_flask_app}}
-ExecStart={{dns_api_service_flask_executable}} run --host=0.0.0.0 --port={{dns_api_service_port}}
+ExecStart={{dns_api_service_executable}} main:api --host=0.0.0.0 --port={{dns_api_service_port}} --reload --use-colors
 Restart=always
 
 [Install]
