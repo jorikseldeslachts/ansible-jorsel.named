@@ -17,7 +17,6 @@
     state: directory
     mode: 0755
   with_items:
-    - "{{ named_config_path }}/rndc_keys"
     - "{{ named_config_path }}/views"
     - "{{ named_config_path }}/zones"
     - "{{ named_config_path }}/reversed_zones"
@@ -39,19 +38,22 @@
   notify: restart named
 
 
-# Rndc keys setup
-- name: Register rndc-key
+# RNDC setup (Remote Name Daemon Control)
+- name: "Generate base64 encoded random {{named_rndc_key_length}} length rndc key"
   shell: |
-    rndc-confgen | grep -i secret | grep -v "#" | cut -d "\"" -f 2
+    head /dev/urandom |tr -dc A-Za-z0-9 |head -c {{named_rndc_key_length}} |base64 -w0
   register: rndc_key
 
 - name: Debug rndc_key
   debug:
     msg: "rndc_key: {{ rndc_key.stdout_lines }}"
 
-- name: Put generated keys in the file
-  shell: |
-    echo {{ rndc_key.stdout_lines }} > {{ named_config_path }}/rndc_keys/rndc.key
+- name: "Configure {{named_config_path}}/rndc.key"
+  template:
+    src: rndc.key.j2
+    dest: "{{named_config_path}}/rndc.key"
+    mode: 0644
+  notify: restart named
 
 
 # Configure named.conf

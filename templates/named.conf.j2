@@ -43,25 +43,7 @@ options {
 
   # conform to RFC1035
   auth-nxdomain no;
-{# 
- # Upstream DNS servers
- 
-  # forwarders {
-  # 	{% for server in named_upstream_dns_servers %}
-  # 	{{ server }};
-  # 	{% endfor %}
-  # };
 
-  # Rndc options
-  default-key "rndc-key";
-  default-server {{ named_rndc_default_server }};
-  default-port {{ named_rndc_default_port }}; #}
-
-{# {% if named_blacklist is defined %}
-  # Blacklist
-  blackhole { blacklist; };
-{% endif %} 
-#}
 };
 
 
@@ -73,27 +55,11 @@ include "{{ named_config_path }}/views/view_vlan_{{ network.vlan_tag }}.conf";
 {% endfor %}
 
 
-
-
-{# 
-
-# # ACL
-# acl "whitelist" {
-# 	localhost;
-# 	{% for subnet in named_acl_trusted %}
-# 	{{ subnet }};
-# 	{% endfor %}
-# };
-
-
-# # RNDC
-# include "{{ named_rndc_key_file }}";
-
-# controls {
-# 	inet {{ named_rndc_default_server }} 
-# 	port {{ named_rndc_default_port }} 
-# 	allow { 127.0.0.1; }
-# 	keys { rndc-key; };
-# };
-#}
-
+# RNDC
+include "/etc/bind/rndc.key";
+controls {
+  inet 127.0.0.1
+  port 953
+  allow { 127.0.0.1; }
+  keys { "galaxy-rndc-key"; };
+};
