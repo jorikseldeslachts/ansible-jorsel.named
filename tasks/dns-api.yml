@@ -33,7 +33,7 @@
   git:
     repo: "{{dns_api_git_repo}}"
     key_file: "{{dns_api_git_key}}"
-    version: master
+    version: "{{dns_api_git_branch}}"
     dest: "{{named_config_path}}/{{dns_api_name}}"
     force: yes
     accept_hostkey: yes

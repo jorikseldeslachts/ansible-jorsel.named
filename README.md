@@ -66,7 +66,6 @@ dns_zones:
 
 ```
 
-
 Example playbook:
 
 ```yml
@@ -75,3 +74,17 @@ Example playbook:
   roles:
     - jorsel.named
 ```
+
+Known issues:
+
+- On Debian 10 Apparmor blocks filewriting to log and config directory.
+  This makes the bind9 service unable to start.
+  A solution for this is to add the following to the bottom of ```/etc/apparmor.d/usr.sbin.named``` and then restart the apparmor service with ```systemctl restart apparmor.service``` .
+
+  ```sh
+  # Allow bind9/named
+  /var/log/bind/** rw,
+  /var/log/bind rw,
+  /etc/bind/** rw,
+  /etc/bind/ rw, 
+  ```
