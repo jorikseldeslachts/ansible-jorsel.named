@@ -9,6 +9,10 @@
     - bind9utils
     - dnsutils
 
+- name: "Clean up original content of {{ named_config_path }}"
+  file:
+    state: absent
+    path: "{{ named_config_path }}/"
 
 # Create folder structure
 - name: "Create all needed bind9 directories"
@@ -17,10 +21,10 @@
     state: directory
     mode: 0755
   with_items:
+    - "/root/.ssh" # for dns-api git key
     - "{{ named_config_path }}/views"
     - "{{ named_config_path }}/zones"
     - "{{ named_config_path }}/reversed_zones"
-
 
 # Logging
 - name: Create logging directory
@@ -29,7 +33,7 @@
     state: directory
     owner: "{{ named_user }}"
     group: "{{ named_user }}"
-    mode: 755
+    mode: 0775
 
 - name: Configure logging
   template:
