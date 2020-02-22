@@ -58,11 +58,11 @@
     state: restarted
     enabled: yes
 
-- name: "Add restart command to sudoers file so user {{dns_api_service_user}} can restart {{named_service_name}} service with sudo"
+- name: "Add allowed commands to sudoers file so user {{dns_api_service_user}} use sudo"
   lineinfile:
     path: /etc/sudoers
     regexp: '^{{dns_api_service_user}} ALL='
-    line: "{{dns_api_service_user}} ALL=(ALL) NOPASSWD: /bin/systemctl restart {{named_service_name}}"
+    line: "{{dns_api_service_user}} ALL=(ALL) NOPASSWD: /bin/systemctl start {{named_service_name}}, /bin/systemctl status {{named_service_name}}"
     validate: 'visudo -cf %s'
 
 - name: "Set Cronjob to sync local records with Cloudflare: on reboot"
