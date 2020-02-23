@@ -13,7 +13,8 @@ WorkingDirectory={{named_config_path}}/{{dns_api_name}}
 Environment=API_DEBUG=True
 {%endif%}
 Environment=DNS_SERVICE={{named_service_name}}
-Environment=LOCAL_DNS_FILE={{dns_api_local_dns_file}}
+Environment=DEFAULT_ZONE_FILE={{dns_api_default_zone_file}}
+Environment=DEFAULT_ZONE={{dns_api_default_zone}}
 ExecStart={{dns_api_service_executable}} main:api --host=0.0.0.0 --port={{dns_api_service_port}} --reload --use-colors
 Restart=always
 

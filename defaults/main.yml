@@ -10,7 +10,8 @@ dns_api_service_user: "{{named_user}}"
 dns_api_service_group: "{{named_user}}"
 dns_api_service_port: 8053
 dns_api_service_executable: /usr/local/bin/uvicorn
-dns_api_local_dns_file: "{{named_config_path}}/zones/db.milkywaygalaxy.be"
+dns_api_default_zone: "milkywaygalaxy.be"
+dns_api_default_zone_file: "{{named_config_path}}/zones/db.{{dns_api_default_zone}}"
 dns_api_debug_mode: true
 
 # default values if not overridden
