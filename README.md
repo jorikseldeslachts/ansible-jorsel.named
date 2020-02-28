@@ -120,4 +120,4 @@ ansible-playbook -u my-sudo-user -i inv.yml --ask-become-pass dns-playbook.yml -
 
 ## Contributors
 
-Jorik SeldeslachtsS
+Jorik Seldeslachts
