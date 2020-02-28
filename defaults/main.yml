@@ -13,6 +13,7 @@ dns_api_service_executable: /usr/local/bin/uvicorn
 dns_api_default_zone: "milkywaygalaxy.be"
 dns_api_default_zone_file: "{{named_config_path}}/zones/db.{{dns_api_default_zone}}"
 dns_api_debug_mode: true
+dns_api_cloudflare_sync_endpoint: /bind9/sync/cloudflare
 
 # default values if not overridden
 named_default_ttl: 86400
