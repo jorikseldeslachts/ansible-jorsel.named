@@ -1,6 +1,19 @@
 # jorsel.named
 
-DNS, bind9, named
+## Intro
+
+### Ansible
+An ansible role to install bind9 or named DNS server on a Linux system. The role is written to be used with a Raspberry Pi but should work on any other Debian distro. RHEL is still work in progress. 
+
+### VLAN support with views
+It can be used in combination with VLAN's. The service will make use of so called 'views'. This way it can override certain records based on the VLAN the record was requested on. This can be helpful for example for a gateway that has to point to different addresses depending on the VLAN the requesting machine is in.
+
+### DNS API
+It will also install a custom made API written with the Python3 FastAPI package.
+The reason for this API is that our current DNS servers are public on Cloudflare. We needed the same domain to be authorative in the local network. Therefor forwarding to Cloudflare would often not work. This API has an endpoint to sync all the public (Cloudflare) DNS records for a specific domain to the local zone files. That way users will not even notice it from inside the local network.
+
+
+## Links
 
 - [Tutorial](http://www.zytrax.com/books/dns/ch7/queries.html)
 - [Tutorial](https://www.digitalocean.com/community/tutorials/how-to-configure-bind-as-a-caching-or-forwarding-dns-server-on-ubuntu-14-04)
@@ -8,13 +21,13 @@ DNS, bind9, named
 - [zones file explained](https://help.dyn.com/how-to-format-a-zone-file/)
 - [other ansible example](https://github.com/systemli/ansible-role-bind9/blob/master/templates/bind/zones/db.template.j2)
 
-Check zones:
 
-```bash
-for i in $(ls); do echo "Checking zone $i ..."; named-checkzone milkywaygalaxy.be $i; echo ; done
-```
+## Usage
 
-Variable objects:
+Variables should be defined in [`defaults/main.yml`](./defaults/main.yml). 
+This file also contains a yaml object that defines the configuration per domain and per VLAN. It should have the following format:
+<br>
+
 ```yml
 # DNS setup
 dns_zones: 
@@ -62,20 +75,36 @@ dns_zones:
               - type: A
                 value: gateway
                 target: 1
-
-
 ```
 
-Example playbook:
-
+Example playbook `dns-playbook.yml`:
 ```yml
-- hosts: dns2
+- hosts: dns-servers
   become: yes
   roles:
     - jorsel.named
 ```
 
-Known issues:
+Example inventory file `inv.yml`:
+```yml
+[dns-servers]
+192.168.0.3
+```
+
+Execute the Ansible run with the following command:
+```sh
+# normal run
+ansible-playbook -u my-sudo-user -i inv.yml --ask-become-pass dns-playbook.yml
+
+# extra verbose run for debugging and troubleshooting
+# verbose mode (-vv or -vvv for more, -vvvv to enable connection debugging)
+ansible-playbook -u my-sudo-user -i inv.yml --ask-become-pass dns-playbook.yml -v
+
+# dry run
+ansible-playbook -u my-sudo-user -i inv.yml --ask-become-pass dns-playbook.yml --check
+```
+
+## Known issues:
 
 - On Debian 10 Apparmor blocks filewriting to log and config directory.
   This makes the bind9 service unable to start.
@@ -88,3 +117,7 @@ Known issues:
   /etc/bind/** rw,
   /etc/bind/ rw, 
   ```
+
+## Contributors
+
+Jorik Seldeslachts

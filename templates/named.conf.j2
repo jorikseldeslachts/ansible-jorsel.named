@@ -1,11 +1,3 @@
-{# # Include rndc-keys
-# {% for vlan in named_vlans %}
-# {{ subnet }};
-# {% endfor %} #}
-{# {% if named_blacklist is defined %}
-# include Blacklist
-include "{{ named_config_path }}/blacklist.conf";
-{% endif %} #}
 
 # include Logging
 include "{{ named_config_path }}/logging.conf";
