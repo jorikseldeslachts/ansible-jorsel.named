@@ -12,6 +12,7 @@
     - libssl-dev
     - libffi-dev
     - git
+    - curl
 
 - name: Copy git ssh key
   template:
@@ -69,13 +70,13 @@
   cron:
     name: "Sync Cloudflare records with local DNS records (reboot)"
     state: present
-    job: "curl localhost:{{dns_api_service_port}}{{dns_api_cloudflare_sync_endpoint}}"
+    job: "curl -X POST http://localhost:{{dns_api_service_port}}{{dns_api_cloudflare_sync_endpoint}} -H 'accept: application/json'"
     special_time: "reboot"
 
 - name: "Set Cronjob to sync local records with Cloudflare: every hour"
   cron:
     name: "Sync Cloudflare records with local DNS records (hourly)"
     state: present
-    job: "curl localhost:{{dns_api_service_port}}{{dns_api_cloudflare_sync_endpoint}}"
+    job: "curl -X POST http://localhost:{{dns_api_service_port}}{{dns_api_cloudflare_sync_endpoint}} -H 'accept: application/json'"
     minute: "0"
     hour: "*"
