@@ -115,7 +115,7 @@ ansible-playbook -u my-sudo-user -i inv.yml --ask-become-pass dns-playbook.yml -
   /var/log/bind/** rw,
   /var/log/bind rw,
   /etc/bind/** rw,
-  /etc/bind/ rw, 
+  /etc/bind/ rw,
   ```
 
 ## Contributors
