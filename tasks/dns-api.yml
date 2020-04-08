@@ -40,7 +40,7 @@
     accept_hostkey: yes
 
 - name: Pip3 install python requirements.txt
-  command: /usr/bin/pip3 install -r requirements.txt
+  command: pip3 install -r requirements.txt
   args:
     chdir: "{{named_config_path}}/{{dns_api_name}}"
 
